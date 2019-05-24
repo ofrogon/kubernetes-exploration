@@ -21,18 +21,18 @@ foreach ($_driveLetter in $_driveLetters) {
 }
 Write-Host "...Done" -ForegroundColor Green
 
-Write-Host "Install/Refresh Helm..." -ForegroundColor Yellow
+
 if ($InstallationType -eq 'complete') {
+    Write-Host "Install/Refresh Helm..." -ForegroundColor Yellow
     & cinst kubernetes-helm -y --acceptlicense
+    Write-Host "...Done" -ForegroundColor Green
 }
-& helm init --wait
-Write-Host "...Done" -ForegroundColor Green
 
 ## Istio
-$_istioVersion = '1.1.5'
+$_istioVersion = '1.1.7'
 $_istioHome = "${Env:Programfiles}\Istio"
 $_istioDownloadUrl = "https://github.com/istio/istio/releases/download/$_istioVersion/istio-$_istioVersion-win.zip"
-$_istioArchive = "$PSScriptRoot\Istio\istio-$_istioVersion.zip"
+$_istioArchive = "$PSScriptRoot\Istio\istio-$_istioVersion-win.zip"
 $_istioExtracted = "$PSScriptRoot\Istio\istio-$_istioVersion"
 
 Write-Host "Installing Istio $_istioVersion..." -ForegroundColor Yellow
@@ -55,23 +55,23 @@ New-Item -ItemType Directory -Path "$_istioHome" -Force | Out-Null
 Copy-Item "$_istioExtracted\bin\istioctl.exe" -Destination "$_istioHome\istioctl.exe" -Force
 New-EnvironmentVariable -Name PATH -Value $_istioHome -Scope User -Append
 
-kubectl create namespace istio-system
-helm template "$PSScriptRoot\Istio\istio-$_istioVersion\install\kubernetes\helm\istio-init" --name istio-init --namespace istio-system | kubectl apply -f -
+Set-Location "$PSScriptRoot\Istio\istio-$_istioVersion"
+kubectl apply -f install/kubernetes/helm/helm-service-account.yaml
+helm init --service-account tiller
+Start-Sleep -s 10
+helm install install/kubernetes/helm/istio-init --name istio-init --namespace istio-system
 Start-Sleep -s 60
-helm install install/kubernetes/helm/istio --name istio --namespace istio-system --values "$PSScriptRoot\Istio\istio-$_istioVersion\install\kubernetes\helm\istio\values-istio-minimal.yaml"
-
-Write-Host "...Done" -ForegroundColor Green
-
-## Ambassador
-Write-Host "Installing Ambassador..." -ForegroundColor Yellow
-Start-Sleep -s 60
-helm upgrade --install --wait ambassador stable/ambassador --namespace ambassador-system --set namespace.name=ambassador-system
-# kubectl apply -f "$PSScriptRoot\Ambassador\ambassador-service-istio.yaml"
+helm install install/kubernetes/helm/istio --name istio --namespace istio-system
+Set-Location $PSScriptRoot
 Write-Host "...Done" -ForegroundColor Green
 
 ## Kubernetes Dasboard
 Write-Host "Installing Kubernetes Dasboard..." -ForegroundColor Yellow
-kubectl apply -f $PSScriptRoot\KubernetesUI\kubernetes-dashboard.yml
+kubectl label namespace kube-system istio-injection=enabled
+kubectl create -n kube-system -f $PSScriptRoot\KubernetesUI\kubernetes-dashboard.yml
+
+istioctl kube-inject -f "$PSScriptRoot\KubernetesUI\kubernetes-dashboard.yml" > "$PSScriptRoot\KubernetesUI\kubernetes-dashboard-istiofied.yml"
+kubectl apply -f "$PSScriptRoot\KubernetesUI\kubernetes-dashboard-istiofied.yml"
 Write-Host "...Done" -ForegroundColor Green
 
 ## Elastic Search
