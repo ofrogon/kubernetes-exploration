@@ -167,15 +167,6 @@ metadata:
     k8s-app: kubernetes-dashboard
   name: kubernetes-dashboard
   namespace: kube-system
-  annotations:
-    getambassador.io/config: |
-      ---
-      apiVersion: ambassador/v1
-      kind:  Mapping
-      name:  kubernetes-dashboard_mapping
-      prefix: /dashboard/
-      service: kubernetes-dashboard.kube-system
-      tls: true
 spec:
   ports:
     - port: 443
