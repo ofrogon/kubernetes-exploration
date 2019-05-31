@@ -1,0 +1,31 @@
+version: '3'
+services:
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2017-latest
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "TestPassword1!"
+    ports:
+      - "1433:1433"
+    networks:
+      - passengers-network
+  passengersapi:
+    restart: always
+    image: registry.gitlab.com/fvgoulet/api-exercise/passengersapi:latest
+    environment:
+      - ASPNETCORE_URLS=https://+:443;http://+:80
+      - ASPNETCORE_HTTPS_PORT=44344
+      - SQLSERVER_HOST=mssql
+      - SQLSERVER_SA_PASSWORD=TestPassword1!
+    depends_on:
+      - mssql
+    links:
+      - mssql
+    ports:
+      - "8082:80"
+      - "44344:443"
+    networks:
+      - passengers-network
+networks:
+  passengers-network:
+    driver: bridge

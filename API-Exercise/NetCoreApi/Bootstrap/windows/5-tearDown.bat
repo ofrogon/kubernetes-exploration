@@ -1,0 +1,1 @@
+call kubectl delete namespace api
