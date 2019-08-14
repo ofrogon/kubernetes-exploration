@@ -23,10 +23,10 @@ data "azurerm_client_config" "current" {
 # Create Azure Kubernetes
 # ---------------------------
 
-resource "azurerm_kubernetes_cluster" "vault" {
+resource "azurerm_kubernetes_cluster" "demo" {
   name                = "${var.azure_group}-${var.azure_environment}-k8"
-  location            = "${azurerm_resource_group.vault.location}"
-  resource_group_name = "${azurerm_resource_group.vault.name}"
+  location            = "${azurerm_resource_group.demo.location}"
+  resource_group_name = "${azurerm_resource_group.demo.name}"
 
   dns_prefix          = "${var.azure_group}-${var.azure_environment}"
   kubernetes_version  = "${var.azure_kubernetes_version}"
@@ -53,8 +53,8 @@ resource "azurerm_kubernetes_cluster" "vault" {
   }
 
   windows_profile {
-    admin_username = "alexandre"
-    admin_password = "GrbP4tate!!!!!!!!!"
+    admin_username = "${var.azure_kubernetes_win_user}"
+    admin_password = "${var.azure_kubernetes_win_pass}"
   }
 
   network_profile {
@@ -74,7 +74,7 @@ resource "azurerm_kubernetes_cluster" "vault" {
 # ---------------------------
 # Create Azure Key Vault
 # ---------------------------
-resource "azurerm_key_vault" "vault" {
+resource "azurerm_key_vault" "demo" {
   name                        = "${var.azure_group}-${var.azure_environment}-KeyVault"
   location                    = "${azurerm_resource_group.demo.location}"
   resource_group_name         = "${azurerm_resource_group.demo.name}"
