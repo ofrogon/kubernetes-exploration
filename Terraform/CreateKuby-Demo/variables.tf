@@ -64,3 +64,12 @@ variable "azure_kubernetes_win_pass" {
   description = "The Windows Profile username. Must be between 12 and 123 chars; have letter minuscules and majuscule; start with a letter; ..."
   default = "J4imeLesPatate3!!!"
 }
+
+# ---------------------------
+# Azure Container Registry
+# ---------------------------
+
+variable "azure_container_registry_sku" {
+  description = "The SKU, can be Classic, Standard or Premium"
+  default = "Standard"
+}
