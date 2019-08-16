@@ -1,6 +1,7 @@
 # Get Subscription and tenant ID
 # id => subscriptionId
 $accountDetails = az account list | ConvertFrom-Json
+# If you have more than one subscription, a selection box will popup
 if($accountDetails.Count -and $accountDetails.Count -gt 1) {
   $accountDetails = $accountDetails | Out-GridView -OutputMode Single
 }
