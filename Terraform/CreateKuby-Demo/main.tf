@@ -75,7 +75,7 @@ resource "azurerm_kubernetes_cluster" "demo" {
 # Create Azure Key Vault
 # ---------------------------
 resource "azurerm_key_vault" "demo" {
-  name                        = "${var.azure_group}-${var.azure_environment}-KeyVault"
+  name                        = "${var.azure_group}${var.azure_environment}KeyVault"
   location                    = "${azurerm_resource_group.demo.location}"
   resource_group_name         = "${azurerm_resource_group.demo.name}"
 
@@ -135,4 +135,17 @@ resource "azurerm_storage_container" "demo" {
   storage_account_name  = "${azurerm_storage_account.demo.name}"
 
   container_access_type = "private"
+}
+
+# ---------------------------
+# Azure Container Registry
+# ---------------------------
+
+resource "azurerm_container_registry" "demo" {
+  name                = "${lower(var.azure_group)}${lower(var.azure_environment)}cr"
+  location            = "${azurerm_resource_group.demo.location}"
+  resource_group_name = "${azurerm_resource_group.demo.name}"
+
+  admin_enabled       = true
+  sku = "${var.azure_container_registry_sku}"
 }
