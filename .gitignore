@@ -353,3 +353,9 @@ healthchecksdb
 
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
+
+# Terraform
+.terraform/
+.terraform.tfstate.*
+terraform.tfstate
+terraform.tfstate.*
