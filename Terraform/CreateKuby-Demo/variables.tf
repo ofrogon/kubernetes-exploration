@@ -29,12 +29,12 @@ variable "azure_connection_tenantId" {
 }
 
 variable "azure_connection_clientId" {
-  # https://portal.azure.com/#blade/Microsoft_AAD_IAM/ApplicationsListBlade
+  # https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType//sourceType/ -> Application (client) ID
   description = "The same as the Application ID"
 }
 
 variable "azure_connection_clientSecret" {
-  # https://portal.azure.com/#blade/Microsoft_AAD_IAM/ApplicationsListBlade
+  # https://portal.azure.com/#blade/Microsoft_AAD_RegisteredApps/ApplicationsListBlade/quickStartType//sourceType/ -> Click on the user -> Certificates & secrets
   description = "The password/credential set on your application"
 }
 
@@ -44,7 +44,7 @@ variable "azure_connection_clientSecret" {
 
 variable "azure_kubernetes_version" {
   # Can determine available versions with : az aks get-versions --location eastus --output table
-  default = "1.14.5"
+  default = "1.14.6"
 }
 
 variable "azure_kubernetes_vm_size" {

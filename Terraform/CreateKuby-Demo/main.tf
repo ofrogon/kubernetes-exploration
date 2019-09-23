@@ -2,7 +2,7 @@
 provider "azurerm" {
   # whilst the `version` attribute is optional, we recommend pinning to a given version of the Provider
   # https://github.com/terraform-providers/terraform-provider-azurerm/releases
-  version = "=1.32.1"
+  version = "=1.34.0"
 }
 
 # Create a resource group

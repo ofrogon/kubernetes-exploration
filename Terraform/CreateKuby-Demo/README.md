@@ -6,6 +6,10 @@
 
 ## How to use
 
+### Installation
+
+Run `terraform init`
+
 ### Create
 
 Run `terraform apply`
